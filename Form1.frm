@@ -73,7 +73,6 @@ Begin VB.Form Form1
    End
    Begin VB.CommandButton btnAddInclude 
       Caption         =   "Add"
-      Enabled         =   0   'False
       Height          =   375
       Left            =   1800
       TabIndex        =   6
@@ -206,7 +205,7 @@ Public Function OpenDirectoryTV(Optional odtvTitle As String) As String
 End Function
 
 
-Private Sub Command1_Click()
+Private Sub btnMake_Click()
     Dim fpath As New FileSystemObject
     
     If DirectoryExists(Label1.Caption & "\out") Then
@@ -307,7 +306,7 @@ Private Sub Command1_Click()
     Shell "explorer " & Label1.Caption & "\out", vbNormalFocus
 End Sub
 
-Private Sub Command2_Click()
+Private Sub btnOpen_Click()
     Dim folder As String
 
     folder = OpenDirectoryTV("Select Web Folder")
@@ -376,21 +375,20 @@ Private Sub Command2_Click()
         File2.Path = folder + "\includes"
         File2.Pattern = "*.*"
         
-        Command1.Enabled = True
-        Command7.Enabled = True
-        Command8.Enabled = True
+        btnNewPage.Enabled = True
+        btnRefresh.Enabled = True
+        btnTemplate.Enabled = True
         
-        Frame1.Enabled = True
-        Frame2.Enabled = True
+        frmIn.Enabled = True
+        frmIncludes.Enabled = True
         File1.Enabled = True
         File2.Enabled = True
         
-        Command3.Enabled = True
-        Command5.Enabled = True
+        btnMake.Enabled = True
     End If
 End Sub
 
-Private Sub Command3_Click()
+Private Sub btnNewPage_Click()
 FileName = InputBox("Filename (including .htm extension)", "New File", "")
 If FileName = "" Then
 Else
@@ -411,50 +409,51 @@ End If
 
 End Sub
 
-Private Sub Command4_Click()
+Private Sub btnDeletePage_Click()
 If MsgBox("Are you sure you want to delete " + File1.FileName + "?", vbYesNo, "Delete File") = vbYes Then
     Kill (Label1.Caption & "\in\" & File1.FileName)
     File1.Refresh
-    Command4.Enabled = False
+    btnDeletePage.Enabled = False
 End If
 End Sub
 
-Private Sub Command5_Click()
-CommonDialog1.Filter = "All files (*.*)|*.*"
-CommonDialog1.DialogTitle = "Add include"
-CommonDialog1.ShowOpen
+Private Sub btnAddInclude_Click()
+objDialog.Filter = "All files (*.*)|*.*"
+objDialog.DialogTitle = "Add include"
+objDialog.ShowOpen
 
-If Not CommonDialog1.FileName = "" Then
-    InFile = CommonDialog1.FileName
-    outfile = Label1.Caption & "\includes\" & CommonDialog1.FileTitle
+If Not objDialog.FileName = "" Then
+    InFile = objDialog.FileName
+    outfile = Label1.Caption & "\includes\" & objDialog.FileTitle
     FileCopy InFile, outfile
     File2.Refresh
 End If
 End Sub
 
-Private Sub Command6_Click()
+Private Sub btnDeleteInclude_Click()
 If MsgBox("Are you sure you want to delete " + File2.FileName + "?", vbYesNo, "Delete File") = vbYes Then
     Kill (Label1.Caption & "\includes\" & File2.FileName)
     File2.Refresh
-    Command6.Enabled = False
+    btnDeleteInclude.Enabled = False
 End If
 End Sub
 
-Private Sub Command7_Click()
+Private Sub btnTemplate_Click()
 Shell "notepad " & Label1.Caption + "\template.htm", vbNormalFocus
 End Sub
 
-Private Sub Command8_Click()
+Private Sub btnRefresh_Click()
 File1.Refresh
 File2.Refresh
 
-Command6.Enabled = False
-Command4.Enabled = False
+btnDeletePage.Enabled = False
+btnDeleteInclude.Enabled = False
 End Sub
+
 
 Private Sub File1_Click()
 If Not File1.FileName = "" Then
-    Command4.Enabled = True
+    btnDeletePage.Enabled = True
 End If
 End Sub
 
@@ -466,6 +465,6 @@ End Sub
 
 Private Sub File2_Click()
 If Not File2.FileName = "" Then
-    Command6.Enabled = True
+    btnDeleteInclude.Enabled = True
 End If
 End Sub
